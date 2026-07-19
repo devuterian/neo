@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neo.local/schemas/calendar-index.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "source", "events"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "generated_at": {"type": ["string", "null"], "format": "date-time"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "fetched_at", "range_start", "range_end", "error"],
+      "properties": {
+        "status": {"enum": ["available", "unavailable", "not_configured"]},
+        "fetched_at": {"type": ["string", "null"], "format": "date-time"},
+        "range_start": {"type": ["string", "null"], "format": "date-time"},
+        "range_end": {"type": ["string", "null"], "format": "date-time"},
+        "error": {"type": ["string", "null"]}
+      }
+    },
+    "events": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id", "calendar_id", "title", "starts_at", "ends_at", "all_day",
+          "color_id", "links"
+        ],
+        "properties": {
+          "event_id": {"type": "string", "minLength": 1},
+          "calendar_id": {"type": "string", "minLength": 1},
+          "title": {"type": "string"},
+          "starts_at": {"type": "string", "format": "date-time"},
+          "ends_at": {"type": "string", "format": "date-time"},
+          "all_day": {"type": "boolean"},
+          "color_id": {"type": ["string", "null"]},
+          "links": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["event_type", "project_id", "milestone_id", "task_id", "day_id"],
+            "properties": {
+              "event_type": {"enum": ["external", "milestone", "deadline", "work_plan", "unknown"]},
+              "project_id": {"type": ["string", "null"], "format": "uuid"},
+              "milestone_id": {"type": ["string", "null"], "format": "uuid"},
+              "task_id": {"type": ["string", "null"], "format": "uuid"},
+              "day_id": {"type": ["string", "null"], "format": "uuid"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

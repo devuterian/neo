@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neo.local/schemas/someday.schema.json",
+  "title": "neo persistent someday items",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "items", "updated_at"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "items": {"type": "array", "items": {"$ref": "#/$defs/somedayItem"}},
+    "updated_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "somedayItem": {
+      "allOf": [
+        {"$ref": "https://neo.local/schemas/action-item.schema.json#/$defs/actionItem"},
+        {"type": "object", "required": ["someday_id"], "properties": {"someday_id": {"type": "string", "format": "uuid"}}}
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}

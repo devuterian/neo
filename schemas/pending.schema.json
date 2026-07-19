@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neo.local/schemas/pending.schema.json",
+  "title": "neo persistent pending items",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "items", "updated_at"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "items": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/pendingItem"}
+    },
+    "updated_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "pendingItem": {
+      "allOf": [
+        {"$ref": "https://neo.local/schemas/action-item.schema.json#/$defs/actionItem"},
+        {"type": "object", "required": ["pending_id"], "properties": {
+          "pending_id": {"type": "string", "format": "uuid"},
+          "carried_from_day_id": {"type": ["string", "null"], "format": "uuid"}
+        }}
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}

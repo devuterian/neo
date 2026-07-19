@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neo.local/schemas/project.schema.json",
+  "title": "neo project",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "project_id", "title", "slug", "description", "status",
+    "waiting", "pause", "created_at", "updated_at", "current_milestone_id",
+    "deadline_calendar_event_id", "milestones", "decisions", "status_history"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "project_id": {"type": "string", "format": "uuid"},
+    "title": {"type": "string", "minLength": 1, "maxLength": 200},
+    "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "description": {"type": "string"},
+    "status": {
+      "enum": ["draft", "active", "waiting", "paused", "complete", "cancelled"]
+    },
+    "waiting": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["on", "since", "next_review_at"],
+          "properties": {
+            "on": {"type": "string", "minLength": 1},
+            "since": {"type": "string", "format": "date-time"},
+            "next_review_at": {"type": ["string", "null"], "format": "date"}
+          }
+        }
+      ]
+    },
+    "pause": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reason", "since", "resume_condition"],
+          "properties": {
+            "reason": {"type": "string", "minLength": 1},
+            "since": {"type": "string", "format": "date-time"},
+            "resume_condition": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    },
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "current_milestone_id": {"type": ["string", "null"], "format": "uuid"},
+    "deadline_calendar_event_id": {"type": ["string", "null"], "minLength": 1},
+    "milestones": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/milestone"}
+    },
+    "decisions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/decision"}
+    },
+    "status_history": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/statusHistory"}
+    }
+  },
+  "$defs": {
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id", "title", "status", "waiting", "created_at", "updated_at",
+        "completed_at", "notes"
+      ],
+      "properties": {
+        "task_id": {"type": "string", "format": "uuid"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 300},
+        "status": {"enum": ["todo", "in_progress", "waiting", "done", "cancelled"]},
+        "waiting": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["on", "since"],
+              "properties": {
+                "on": {"type": "string", "minLength": 1},
+                "since": {"type": "string", "format": "date-time"}
+              }
+            }
+          ]
+        },
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"},
+        "completed_at": {"type": ["string", "null"], "format": "date-time"},
+        "notes": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/note"}
+        }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "milestone_id", "title", "status", "remaining_effort",
+        "calendar_event_id", "created_at", "updated_at", "tasks"
+      ],
+      "properties": {
+        "milestone_id": {"type": "string", "format": "uuid"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 200},
+        "status": {"enum": ["planned", "active", "complete", "cancelled"]},
+        "remaining_effort": {"type": "number", "minimum": 0, "multipleOf": 0.5},
+        "calendar_event_id": {"type": ["string", "null"], "minLength": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"},
+        "tasks": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/task"}
+        }
+      }
+    },
+    "note": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["note_id", "occurred_at", "text"],
+      "properties": {
+        "note_id": {"type": "string", "format": "uuid"},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "text": {"type": "string", "minLength": 1}
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision_id", "occurred_at", "title", "detail"],
+      "properties": {
+        "decision_id": {"type": "string", "format": "uuid"},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "title": {"type": "string", "minLength": 1},
+        "detail": {"type": "string", "minLength": 1}
+      }
+    },
+    "statusHistory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["history_id", "occurred_at", "from", "to", "reason"],
+      "properties": {
+        "history_id": {"type": "string", "format": "uuid"},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "from": {"type": ["string", "null"]},
+        "to": {"type": "string"},
+        "reason": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

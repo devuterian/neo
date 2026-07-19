@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "timezone": "Asia/Seoul",
+  "calendar": {
+    "managed_calendar_id": null,
+    "read_only_calendar_ids": [],
+    "tomato_color_id": null
+  },
+  "notifications": {
+    "status_check": "20:00",
+    "work_start_check": "22:50",
+    "work_end_check": "03:00"
+  },
+  "brief": {
+    "path": "brief.md"
+  },
+  "auto_wake": "ask"
+}

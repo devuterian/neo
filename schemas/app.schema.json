@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neo.local/schemas/app.schema.json",
+  "title": "neo application configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "timezone", "calendar", "notifications", "brief"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "timezone": {"type": "string", "minLength": 1, "default": "Asia/Seoul"},
+    "calendar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["managed_calendar_id", "read_only_calendar_ids", "tomato_color_id"],
+      "properties": {
+        "managed_calendar_id": {"type": ["string", "null"], "minLength": 1},
+        "read_only_calendar_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "tomato_color_id": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "notifications": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status_check", "work_start_check", "work_end_check"],
+      "properties": {
+        "status_check": {"type": "string", "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"},
+        "work_start_check": {"type": "string", "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"},
+        "work_end_check": {"type": "string", "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"}
+      }
+    },
+    "brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1}
+      }
+    },
+    "auto_wake": {
+      "type": "string",
+      "enum": ["never", "ask", "always"],
+      "default": "ask"
+    }
+  }
+}

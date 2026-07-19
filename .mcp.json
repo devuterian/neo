@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "daiso-mcp": {
+      "type": "http",
+      "url": "https://mcp.aka.page"
+    },
+    "kakao-map": {
+      "command": "bash",
+      "args": [
+        "scripts/run-kakao-map-mcp.sh"
+      ],
+      "env": {
+        "KAKAO_API_KEY": "${KAKAO_API_KEY}"
+      }
+    },
+    "naeryeo": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@gyeonghokim/naeryeo",
+        "mcp"
+      ]
+    }
+  }
+}

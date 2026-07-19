@@ -1,0 +1,79 @@
+name: verify
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  pr-path-guard:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reject live operational paths
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python scripts/check_pr_paths.py --base "$BASE_SHA" --head "$HEAD_SHA"
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: Asia/Seoul
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[dev]'
+
+      - name: Run test suite
+        id: tests
+        continue-on-error: true
+        run: pytest -q > pytest.log 2>&1
+
+      - name: Validate repository state
+        id: validate
+        continue-on-error: true
+        run: |
+          neoctl init
+          neoctl --json validate > validate.log 2>&1
+
+      - name: Upload verification logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-logs
+          path: |
+            pytest.log
+            validate.log
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Report verification result
+        if: always()
+        run: |
+          cat pytest.log
+          cat validate.log
+          if [[ "${{ steps.tests.outcome }}" != "success" || "${{ steps.validate.outcome }}" != "success" ]]; then
+            exit 1
+          fi

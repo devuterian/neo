@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neo.local/schemas/project-index.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "projects"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "generated_at": {"type": ["string", "null"], "format": "date-time"},
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "project_id", "title", "slug", "status", "path",
+          "current_milestone_id", "open_task_count", "updated_at"
+        ],
+        "properties": {
+          "project_id": {"type": "string", "format": "uuid"},
+          "title": {"type": "string"},
+          "slug": {"type": "string"},
+          "status": {"type": "string"},
+          "path": {"type": "string"},
+          "current_milestone_id": {"type": ["string", "null"], "format": "uuid"},
+          "open_task_count": {"type": "integer", "minimum": 0},
+          "updated_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    }
+  }
+}

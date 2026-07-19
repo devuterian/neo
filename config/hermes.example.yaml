@@ -1,0 +1,20 @@
+# Merge only the relevant keys into the config used by your installed Hermes version.
+# Keep the repository path stable across releases.
+
+terminal:
+  backend: "docker"
+  cwd: "/workspace"
+  timeout: 180
+  docker_image: "neo:0.1.0"
+  docker_mount_cwd_to_workspace: true
+  docker_run_as_host_user: true
+  home_mode: "profile"
+
+# Keep Telegram access narrower than the interactive CLI when your Hermes
+# installation supports composed platform toolsets.
+platform_toolsets:
+  cli: [hermes-cli]
+  telegram: [terminal, file, cronjob, messaging]
+
+cron:
+  wrap_response: false

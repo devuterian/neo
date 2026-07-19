@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neo.local/schemas/action-item.schema.json",
+  "$defs": {
+    "actionItem": {
+      "type": "object",
+      "required": ["title", "done", "created_at"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "default": ""},
+        "done": {"type": "boolean"},
+        "created_at": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}

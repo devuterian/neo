@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neo.local/schemas/current-index.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "current_day", "current_work_session"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "generated_at": {"type": ["string", "null"], "format": "date-time"},
+    "current_day": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["day_id", "date", "path"],
+          "properties": {
+            "day_id": {"type": "string", "format": "uuid"},
+            "date": {"type": "string", "format": "date"},
+            "path": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "current_work_session": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["session_id", "day_id", "task_id"],
+          "properties": {
+            "session_id": {"type": "string", "format": "uuid"},
+            "day_id": {"type": "string", "format": "uuid"},
+            "task_id": {"type": "string", "format": "uuid"}
+          }
+        }
+      ]
+    }
+  }
+}

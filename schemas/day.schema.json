@@ -1,0 +1,599 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neo.local/schemas/day.schema.json",
+  "title": "neo life day",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "day_id",
+    "date",
+    "status",
+    "wake_at",
+    "sleep_at",
+    "closed_at",
+    "workday_capacity",
+    "external_schedule_snapshot",
+    "work_plan",
+    "todolist",
+    "meals",
+    "mood",
+    "outings",
+    "work_sessions",
+    "calendar_work_event_ids",
+    "notes",
+    "medications",
+    "showers",
+    "hair_dries",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "day_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "closed",
+        "void"
+      ]
+    },
+    "wake_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sleep_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "closed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "workday_capacity": {
+      "enum": [
+        null,
+        0,
+        0.5,
+        1
+      ]
+    },
+    "external_schedule_snapshot": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/calendarSnapshot"
+      }
+    },
+    "work_plan": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/planItem"
+      }
+    },
+    "todolist": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/todoItem"
+      }
+    },
+    "meals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mealItem"
+      }
+    },
+    "mood": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/moodEntry"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "outings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/outingItem"
+      }
+    },
+    "work_sessions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/workSession"
+      }
+    },
+    "calendar_work_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/note"
+      }
+    },
+    "medications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/medicationItem"
+      }
+    },
+    "showers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/showerItem"
+      }
+    },
+    "hair_dries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hairDryItem"
+      }
+    },
+    "naps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/napItem"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "calendarSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "calendar_id",
+        "title",
+        "starts_at",
+        "ends_at",
+        "all_day"
+      ],
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "calendar_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string"
+        },
+        "starts_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ends_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "all_day": {
+          "type": "boolean"
+        }
+      }
+    },
+    "planItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plan_item_id",
+        "project_id",
+        "project_title_snapshot",
+        "milestone_id",
+        "milestone_title_snapshot",
+        "task_id",
+        "task_title_snapshot",
+        "planned_allocation",
+        "calendar_event_id",
+        "created_at"
+      ],
+      "properties": {
+        "plan_item_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "project_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "project_title_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "milestone_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "milestone_title_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "task_title_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "planned_allocation": {
+          "enum": [
+            0.5,
+            1
+          ]
+        },
+        "calendar_event_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "todoItem": {
+      "allOf": [
+        {
+          "$ref": "https://neo.local/schemas/action-item.schema.json#/$defs/actionItem"
+        },
+        {
+          "type": "object",
+          "required": [
+            "todo_id"
+          ],
+          "properties": {
+            "todo_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "mealItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meal_id",
+        "occurred_at",
+        "tag",
+        "what"
+      ],
+      "properties": {
+        "meal_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tag": {
+          "enum": [
+            "breakfast",
+            "lunch",
+            "dinner",
+            "snack"
+          ]
+        },
+        "what": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "moodEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "outingItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outing_id",
+        "left_at",
+        "place"
+      ],
+      "properties": {
+        "outing_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "left_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "returned_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "place": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "workSession": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "project_id",
+        "project_title_snapshot",
+        "milestone_id",
+        "milestone_title_snapshot",
+        "task_id",
+        "task_title_snapshot",
+        "checked_in_at",
+        "checked_out_at",
+        "note"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "project_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "project_title_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "milestone_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "milestone_title_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "task_title_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checked_in_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "checked_out_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "note": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "note_id",
+        "occurred_at",
+        "text"
+      ],
+      "properties": {
+        "note_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "medicationItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "medication_id",
+        "name",
+        "action",
+        "occurred_at",
+        "recorded_at",
+        "dose",
+        "note"
+      ],
+      "properties": {
+        "medication_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action": {
+          "enum": [
+            "taken",
+            "skipped"
+          ]
+        },
+        "occurred_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dose": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "showerItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shower_id",
+        "started_at"
+      ],
+      "properties": {
+        "shower_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "shower",
+            "bath",
+            null
+          ]
+        }
+      }
+    },
+    "hairDryItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hair_dry_id",
+        "started_at"
+      ],
+      "properties": {
+        "hair_dry_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "napItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nap_id",
+        "started_at",
+        "ended_at"
+      ],
+      "properties": {
+        "nap_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
