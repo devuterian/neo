@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import os
 import re
 import unicodedata
 import uuid
@@ -23,8 +25,25 @@ def new_uuid5(name: str) -> str:
 
 
 
+def local_timezone() -> ZoneInfo:
+    configured = os.getenv("NEO_TIMEZONE")
+    if not configured:
+        for root in (Path.cwd(), *Path.cwd().parents):
+            path = root / "config" / "app.json"
+            if path.is_file():
+                try:
+                    configured = json.loads(path.read_text(encoding="utf-8")).get("timezone")
+                except (OSError, ValueError, TypeError):
+                    configured = None
+                break
+    try:
+        return ZoneInfo(configured or "Asia/Seoul")
+    except (KeyError, ValueError) as exc:
+        raise ValidationError(f"Unknown timezone: {configured}") from exc
+
+
 def now_seoul() -> datetime:
-    return datetime.now(SEOUL)
+    return datetime.now(local_timezone())
 
 
 def today_seoul() -> date:
@@ -44,8 +63,8 @@ def parse_datetime(value: str | None) -> datetime:
     except ValueError as exc:
         raise ValidationError(f"Invalid ISO datetime: {value}") from exc
     if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=SEOUL)
-    return parsed.astimezone(SEOUL)
+        parsed = parsed.replace(tzinfo=local_timezone())
+    return parsed.astimezone(local_timezone())
 
 
 def ensure_slug(value: str) -> str:
